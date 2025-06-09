@@ -1,67 +1,76 @@
 #include <iostream>
-#include "Animal.h"
+#include <string>
+#include "Library.h"
 using namespace std;
 
-int main() {
-    string name, sound;
-    int age;
-    const int SIZE = 3;
-    Animal* animals[SIZE];
-
-    // 輸入動物資料
-    for (int i = 0; i < SIZE; i++) {
-        cout << "請輸入第 " << i + 1 << " 隻動物的資料：" << endl;
-        cout << "名字：";
-        getline(cin, name);
-        cout << "年齡：";
-        cin >> age;
-        cin.ignore(); // 忽略換行符
-        cout << "叫聲：";
-        getline(cin, sound);
-
-        animals[i] = new Animal(name, age, sound);
-        cout << endl;
-    }
-
-    // 顯示所有動物
-    cout << "\n=== 所有動物的資料 ===" << endl;
-    for (int i = 0; i < SIZE; i++) {
-        animals[i]->showInfo();
-        cout << "-----------------" << endl;
-    }
-
-    // 統計：平均年齡、最年輕與最年長
-    int totalAge = 0;
-    int maxAge = animals[0]->getAge();
-    int minAge = animals[0]->getAge();
-    string oldestName = animals[0]->getName();
-    string youngestName = animals[0]->getName();
-
-    for (int i = 0; i < SIZE; i++) {
-        int currentAge = animals[i]->getAge();
-        totalAge += currentAge;
-
-        if (currentAge > maxAge) {
-            maxAge = currentAge;
-            oldestName = animals[i]->getName();
-        }
-
-        if (currentAge < minAge) {
-            minAge = currentAge;
-            youngestName = animals[i]->getName();
-        }
-    }
-
-    double avgAge = (double)totalAge / SIZE;
-    cout << "\n=== 年齡統計 ===" << endl;
-    cout << "平均年齡：" << avgAge << endl;
-    cout << "最年長的動物：" << oldestName << "（" << maxAge << " 歲）" << endl;
-    cout << "最年輕的動物：" << youngestName << "（" << minAge << " 歲）" << endl;
-
-    // 清除記憶體
-    for (int i = 0; i < SIZE; i++) {
-        delete animals[i];
-    }
-
-    return 0;
+void showMenu() {
+    cout << "\n--- 圖書館系統 ---\n";
+    cout << "1. 新增書籍\n";
+    cout << "2. 新增使用者\n";
+    cout << "3. 借書\n";
+    cout << "4. 還書\n";
+    cout << "5. 顯示所有書籍\n";
+    cout << "6. 顯示所有使用者\n";
+    cout << "7. 查詢書籍狀態\n";
+    cout << "0. 離開系統\n";
+    cout << "請選擇：";
 }
+
+int main() {
+    Library lib;
+    int choice;
+    string title, isbn, name, id;
+    while (true) {
+        showMenu();
+        cin >> choice;
+        cin.ignore(); // 忽略換行符
+
+        switch (choice) {
+        case 1:
+            cout << "書名：";
+            getline(cin, title);
+            cout << "ISBN：";
+            getline(cin, isbn);
+            lib.addBook(title, isbn);
+            break;
+        case 2:
+            cout << "使用者姓名：";
+            getline(cin, name);
+            cout << "使用者ID：";
+            getline(cin, id);
+            lib.addUser(name, id);
+            break;
+        case 3:
+            cout << "使用者ID：";
+            getline(cin, id);
+            cout << "書籍ISBN：";
+            getline(cin, isbn);
+            lib.borrowBook(id, isbn);
+            break;
+        case 4:
+            cout << "使用者ID：";
+            getline(cin, id);
+            cout << "書籍ISBN：";
+            getline(cin, isbn);
+            lib.returnBook(id, isbn);
+            break;
+        case 5:
+            lib.showAllBooks();
+            break;
+        case 6:
+            lib.showAllUsers();
+            break;
+        case 7:
+            cout << "輸入書籍ISBN：";
+            getline(cin, isbn);
+            lib.queryBook(isbn);
+            break;
+        case 0:
+            cout << "再見！" << endl;
+            return 0;
+        default:
+            cout << "無效選項，請重新輸入。" << endl;
+        }
+    }
+}
+
